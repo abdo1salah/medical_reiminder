@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.lifecycleScope
 import com.example.medicalreiminder.model.DbHelper
 import com.example.medicalreiminder.model.Reminder
+import com.example.medicalreiminder.presentation.Navigation
 import com.example.medicalreiminder.ui.theme.MedicalReiminderTheme
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -30,19 +31,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val db = DbHelper.getInstance(this)
-        val dao = db.dao
-        val reminder = Reminder(0,"zeby","zeby","zebgy","zeby","zeby")
-        lifecycleScope.launch {
-            dao.upsertReminder(reminder)
-        }
+         auth = Firebase.auth
         setContent {
-         val reminders = dao.getReminders().collectAsState(initial = emptyList()).value
+
             MedicalReiminderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = reminders[0].name,
-                        modifier = Modifier.padding(innerPadding)
+                    Navigation(modifier = Modifier.padding(innerPadding), appContext = application
                     )
                 }
             }
