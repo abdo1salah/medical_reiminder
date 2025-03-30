@@ -12,7 +12,7 @@ import com.google.firebase.ktx.Firebase
 class AuthenticationViewModel : ViewModel() {
     val auth = Firebase.auth
     val firestore = Firebase.firestore
-    private fun signUp(
+     fun signUp(
         email: String,
         password: String,
         name: String,
@@ -44,12 +44,16 @@ class AuthenticationViewModel : ViewModel() {
             }
     }
 
-    private fun login(
+    fun login(
         email: String,
         password: String,
         context: Context,
         onResult: (Boolean, String?) -> Unit
     ) {
+        if (email.isBlank() or password.isBlank()){
+            Toast.makeText(context, "please write email and password first", Toast.LENGTH_SHORT).show()
+            return
+        }
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
