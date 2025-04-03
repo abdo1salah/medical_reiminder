@@ -4,15 +4,21 @@ import android.content.Context
 import android.widget.Toast
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.medicalreiminder.model.Reminder
+import com.example.medicalreiminder.model.ReminderDao
 import com.example.medicalreiminder.model.UserModel
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.toObject
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 class AuthenticationViewModel : ViewModel() {
     val auth = Firebase.auth
     val firestore = Firebase.firestore
-     fun signUp(
+    fun signUp(
         email: String,
         password: String,
         name: String,
@@ -50,14 +56,15 @@ class AuthenticationViewModel : ViewModel() {
         context: Context,
         onResult: (Boolean, String?) -> Unit
     ) {
-        if (email.isBlank() or password.isBlank()){
-            Toast.makeText(context, "please write email and password first", Toast.LENGTH_SHORT).show()
+        if (email.isBlank() or password.isBlank()) {
+            Toast.makeText(context, "please write email and password first", Toast.LENGTH_SHORT)
+                .show()
             return
         }
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener {
                 if (it.isSuccessful) {
-                    if (auth.currentUser!!.isEmailVerified) {
+                   if (auth.currentUser!!.isEmailVerified) {
                         onResult(true, null)
                     } else {
                         Toast.makeText(context, "verify your email first", Toast.LENGTH_SHORT)
@@ -78,6 +85,48 @@ class AuthenticationViewModel : ViewModel() {
                     Toast.makeText(context, "something went wrong", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    fun logOut() {
+        auth.signOut()
+    }
+
+    fun addReminderToFireBase(reminder: Reminder, context: Context) {
+        viewModelScope.launch {
+            firestore.collection("users")
+                .document(auth.currentUser?.uid!!)
+                .collection("reminders")
+                .document(reminder.id.toString())
+                .set(reminder)
+                .addOnCompleteListener {
+                    Toast.makeText(context, "Reminder added", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+    }
+
+    fun deleteReminderFromFireBase(reminder: Reminder) {
+        viewModelScope.launch {
+            firestore.collection("users")
+                .document(auth.currentUser?.uid!!)
+                .collection("reminders")
+                .document(reminder.id.toString())
+                .delete()
+        }
+    }
+
+    suspend fun getAllRemindersFromFireBase(): List<Reminder> {
+        return try {
+            val documents = firestore.collection("users")
+                .document(auth.currentUser?.uid!!)
+                .collection("reminders")
+                .get()
+                .await()
+
+            documents.map { it.toObject<Reminder>() }
+        } catch (e: Exception) {
+            listOf(Reminder())
+        }
     }
 
 }

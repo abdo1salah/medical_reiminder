@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicalreiminder.model.Api.BarcodeApi
 import com.example.medicalreiminder.model.DbHelper
 import com.example.medicalreiminder.model.Reminder
@@ -43,6 +44,14 @@ class ReminderViewModel(app: Application) : AndroidViewModel(app) {
                 prodName = BarcodeApi.retrofitService.getData(endPoint).products[0].brand
             } catch (e: Exception) {
 
+            }
+        }
+
+    }
+    fun loadIntoDb(reminders:List<Reminder>){
+        viewModelScope.launch {
+            for (reminder in reminders){
+                db.upsertReminder(reminder)
             }
         }
 

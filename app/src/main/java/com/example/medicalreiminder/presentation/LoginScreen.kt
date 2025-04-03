@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.medicalreiminder.model.Reminder
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 
 
@@ -83,6 +84,8 @@ fun LoginPage(
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             }
+            val reminder = Reminder(0,"zeby","4","2","1","manga")
+            authViewModel.addReminderToFireBase(reminder,context)
         }
         ) {
             Text(text = "Login")

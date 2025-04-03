@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.example.medicalreiminder.model.utils.navigateAndDontComeBack
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
 import kotlinx.serialization.Serializable
@@ -38,6 +39,7 @@ fun Navigation(
 
     NavHost(navController = navController, startDestination = SignIn) {
         val authenticationViewModel = AuthenticationViewModel()
+        val reminderViewModel = ReminderViewModel(appContext)
         composable<Authentication> {
 
             val viewModel = ReminderViewModel(appContext)
@@ -48,7 +50,7 @@ fun Navigation(
         }
         composable<SignIn> {
             LoginPage(modifier, authenticationViewModel, {
-                navController.navigate(route = Main)
+                navController.navigateAndDontComeBack(Main)
             }) {
                 navController.navigate(route = SignUp)
             }

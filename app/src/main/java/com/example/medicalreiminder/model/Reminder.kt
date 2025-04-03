@@ -9,10 +9,10 @@ import kotlinx.parcelize.Parcelize
 @Entity("reminders")
 data class Reminder(
     @PrimaryKey(autoGenerate = true)
-    val id:Int,
-    val name: String,
-    val firstTime: String,
-    val secondTime: String,
-    val thirdTime: String,
-    val dose: String
+    val id:Int = 0,
+    val name: String = "",
+    val firstTime: String = "",
+    val secondTime: String = "",
+    val thirdTime: String = "",
+    val dose: String = ""
 ): Parcelable
