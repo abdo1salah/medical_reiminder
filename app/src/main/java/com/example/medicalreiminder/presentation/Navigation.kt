@@ -6,16 +6,13 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.example.medicalreiminder.model.utils.navigateAndDontComeBack
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
-import com.example.medicalreiminder.SignupScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -57,7 +54,11 @@ fun Navigation(
             }
         }
         composable<SignUp> {
-            SignupScreen(modifier)
+            SignupScreen(modifier,authenticationViewModel, onSignUp = {
+                navController.navigate(route = Authentication)
+            }){
+                navController.navigate(route = SignIn)
+            }
         }
         composable<Main> {
             main(modifier) {

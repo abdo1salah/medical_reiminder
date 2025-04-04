@@ -1,6 +1,7 @@
-package com.example.medicalreiminder
+package com.example.medicalreiminder.presentation
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -16,6 +17,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -24,22 +26,17 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.medicalreiminder.R
+import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 
-class SignupActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            SignupScreen(Modifier)
-        }
-    }
-}
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier) {
+fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewModel,onSignUp:()->Unit, goToLogin: () -> Unit) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -127,7 +124,14 @@ fun SignupScreen(modifier: Modifier = Modifier) {
 
         // Sign Up Button
         Button(
-            onClick = { /* Handle Sign Up Logic */ },
+            onClick = { viewModel.signUp(email,password,name,context){state,message->
+                if (state){
+                    onSignUp()
+                }
+                else{
+                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
+                }
+            } },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -146,7 +150,7 @@ fun SignupScreen(modifier: Modifier = Modifier) {
         ) {
             Text("Already have an account? ", fontSize = 14.sp, color = Color.Gray)
             TextButton(
-                onClick = { /* Navigate to Login Screen */ },
+                onClick = {goToLogin() },
                 modifier = Modifier
                     .padding(start = 4.dp)
                     .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
@@ -157,8 +161,4 @@ fun SignupScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignupScreen() {
-    SignupScreen()
-}
+
