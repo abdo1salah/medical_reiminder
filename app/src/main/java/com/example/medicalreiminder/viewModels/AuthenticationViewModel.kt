@@ -25,6 +25,11 @@ class AuthenticationViewModel : ViewModel() {
         context: Context,
         onResult: (Boolean, String?) -> Unit
     ) {
+        if (email.isBlank() or password.isBlank() or name.isBlank() ) {
+            Toast.makeText(context, "please write email , password and name first", Toast.LENGTH_SHORT)
+                .show()
+            return
+        }
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { Result ->
                 if (Result.isSuccessful) {

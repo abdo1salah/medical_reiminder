@@ -1,9 +1,6 @@
 package com.example.medicalreiminder.presentation
 
-import android.os.Bundle
 import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -23,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicalreiminder.R
@@ -136,7 +132,7 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
                 .fillMaxWidth()
                 .height(50.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF82B1FF))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
         ) {
             Text("Sign up", fontSize = 18.sp, color = Color.White)
         }

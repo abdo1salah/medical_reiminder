@@ -73,10 +73,11 @@ fun Navigation(
 @Composable
 fun auth(modifier: Modifier = Modifier, viewModel: ReminderViewModel, nav: () -> Unit) {
     Column {
-        Text("product${viewModel.prodName}", modifier = modifier)
+        //Text("product${viewModel.prodName}", modifier = modifier)
         Button(modifier = modifier, onClick = { viewModel.scanBarcode() }) {
             Text("scan")
         }
+
     }
 
 }
