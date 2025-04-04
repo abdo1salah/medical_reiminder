@@ -46,7 +46,13 @@ android {
 }
 
 dependencies {
-
+    implementation("androidx.compose.material:material-icons-extended:1.4.3")
+    implementation("androidx.compose.ui:ui:1.6.0") // Update version if needed
+    implementation("androidx.compose.material3:material3:1.2.0") // Material 3
+    implementation("androidx.compose.foundation:foundation:1.6.0")
+    implementation("androidx.compose.runtime:runtime:1.6.0")
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

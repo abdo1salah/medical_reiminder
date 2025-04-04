@@ -15,6 +15,7 @@ import androidx.navigation.toRoute
 import com.example.medicalreiminder.model.utils.navigateAndDontComeBack
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
+import com.example.medicalreiminder.SignupScreen
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -37,7 +38,7 @@ fun Navigation(
     appContext: Application
 ) {
 
-    NavHost(navController = navController, startDestination = SignIn) {
+    NavHost(navController = navController, startDestination = SignUp) {
         val authenticationViewModel = AuthenticationViewModel()
         val reminderViewModel = ReminderViewModel(appContext)
         composable<Authentication> {
@@ -56,9 +57,7 @@ fun Navigation(
             }
         }
         composable<SignUp> {
-            signup(modifier) {
-                navController.navigate(route = Main)
-            }
+            SignupScreen(modifier)
         }
         composable<Main> {
             main(modifier) {
