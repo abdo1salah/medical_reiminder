@@ -14,6 +14,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.QrCodeScanner
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
@@ -21,6 +22,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,21 +35,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.medicalreiminder.model.Reminder
+import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditMedicationScreen(
     modifier: Modifier,
     id: Int,
     medName: String,
-    medFirstTime: String,
-    medSecondTime: String,
-    medThirdTime: String,
+    medFirstTime: Long,
+    medSecondTime: Long,
+    medThirdTime: Long,
     medDose: String,
-    viewModel: ReminderViewModel,
+    reminderViewModel: ReminderViewModel,
+    authenticationViewModel: AuthenticationViewModel,
     back: () -> Unit
 ) {
+    val timePickerState = rememberTimePickerState()
+    val isTimePicker1Visible = remember {
+        mutableStateOf(false)
+    }
+    val isTimePicker2Visible = remember {
+        mutableStateOf(false)
+    }
+    val isTimePicker3Visible = remember {
+        mutableStateOf(false)
+    }
+    val format = remember {
+        SimpleDateFormat("hh:mm a", Locale.getDefault())
+    }
     var medName by remember { mutableStateOf(medName) }
     var time1 by remember { mutableStateOf(medFirstTime) }
     var time2 by remember { mutableStateOf(medSecondTime) }
@@ -109,31 +132,91 @@ fun EditMedicationScreen(
         Spacer(modifier = Modifier.height(10.dp))
 
         // Time 1 Picker
+        if (isTimePicker1Visible.value){
+            Dialog(onDismissRequest = {}) {
+                TimePicker(state = timePickerState)
+                Row {
+                    Button(onClick = {isTimePicker1Visible.value = isTimePicker1Visible.value.not()}) {
+                        Text("Cancel")
+                    }
+                    Button(onClick = {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                            set(Calendar.MINUTE,timePickerState.minute)
+                        }
+                        time1 = calendar.timeInMillis
+                    }) {
+                        Text("Confirm")
+                    }
+                }
+            }
+        }
+        if (isTimePicker2Visible.value){
+            Dialog(onDismissRequest = {}) {
+                TimePicker(state = timePickerState)
+                Row {
+                    Button(onClick = {isTimePicker2Visible.value = isTimePicker2Visible.value.not()}) {
+                        Text("Cancel")
+                    }
+                    Button(onClick = {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                            set(Calendar.MINUTE,timePickerState.minute)
+                        }
+                        time2 = calendar.timeInMillis
+                    }) {
+                        Text("Confirm")
+                    }
+                }
+            }
+        }
+        if (isTimePicker3Visible.value){
+            Dialog(onDismissRequest = {}) {
+                TimePicker(state = timePickerState)
+                Row {
+                    Button(onClick = {isTimePicker3Visible.value = isTimePicker3Visible.value.not()}) {
+                        Text("Cancel")
+                    }
+                    Button(onClick = {
+                        val calendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                            set(Calendar.MINUTE,timePickerState.minute)
+                        }
+                        time3 = calendar.timeInMillis
+                    }) {
+                        Text("Confirm")
+                    }
+                }
+            }
+        }
+        // Time 1 Picker
         OutlinedButton(
-            onClick = { showTimePicker(time1) { time1 = it } },
+            onClick = {
+                isTimePicker1Visible.value = true
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Time 1: $time1")
+            Text("Time 1: ${format.format(time1)}")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
         // Time 2 Picker
         OutlinedButton(
-            onClick = { showTimePicker(time2) { time2 = it } },
+            onClick = { isTimePicker2Visible.value = true },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Time 2: $time2")
+            Text("Time 2: ${format.format(time2)}")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
         // Time 3 Picker
         OutlinedButton(
-            onClick = { showTimePicker(time3) { time3 = it } },
+            onClick = {isTimePicker3Visible.value = true },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Time 3: $time3")
+            Text("Time 3: ${format.format(time3)}")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -157,16 +240,18 @@ fun EditMedicationScreen(
         Button(
             onClick = {
                 if (medName.isNotBlank()) {
-                    viewModel.addReminder(
-                        Reminder(
-                            id = id,
-                            name = medName,
-                            firstTime = medFirstTime,
-                            secondTime = medSecondTime,
-                            thirdTime = medThirdTime,
-                            dose = medDose
-                        )
+                    val reminder =  Reminder(
+                        id = id,
+                        name = medName,
+                        firstTime = time1,
+                        secondTime = time2,
+                        thirdTime = time3,
+                        dose = frequency
                     )
+                    reminderViewModel.addReminder(
+                        reminder
+                    )
+                    authenticationViewModel.addReminderToFireBase(reminder,context)
                     back()
                 }
             },

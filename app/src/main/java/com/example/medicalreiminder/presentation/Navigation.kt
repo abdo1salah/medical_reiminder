@@ -32,9 +32,9 @@ object Main
 data class EditReminder(
     val id: Int = 0,
     val name: String,
-    val firstTime: String,
-    val secondTime: String,
-    val thirdTime: String,
+    val firstTime: Long,
+    val secondTime: Long,
+    val thirdTime: Long,
     val dose: String
 )
 
@@ -54,7 +54,7 @@ fun Navigation(
     appContext: Application
 ) {
 
-    NavHost(navController = navController, startDestination = Main) {
+    NavHost(navController = navController, startDestination = SignIn) {
         val authenticationViewModel = AuthenticationViewModel()
         val reminderViewModel = ReminderViewModel(appContext)
         composable<Authentication> {
@@ -93,7 +93,8 @@ fun Navigation(
             val args = it.toRoute<EditReminder>()
             EditMedicationScreen(
                 modifier = modifier,
-                viewModel = reminderViewModel,
+                reminderViewModel = reminderViewModel,
+                authenticationViewModel = authenticationViewModel,
                 id = args.id,
                 medName = args.name,
                 medFirstTime = args.firstTime,
@@ -108,7 +109,8 @@ fun Navigation(
             val args = it.toRoute<EditReminder>()
             AddMedicationScreen(
                 modifier = modifier,
-                viewModel = reminderViewModel,
+                reminderViewModel = reminderViewModel,
+                authenticationViewModel = authenticationViewModel,
                 medName = args.name,
                 medFirstTime = args.firstTime,
                 medSecondTime = args.secondTime,
