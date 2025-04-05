@@ -35,7 +35,7 @@ fun Navigation(
     appContext: Application
 ) {
 
-    NavHost(navController = navController, startDestination = SignUp) {
+    NavHost(navController = navController, startDestination = Main) {
         val authenticationViewModel = AuthenticationViewModel()
         val reminderViewModel = ReminderViewModel(appContext)
         composable<Authentication> {
@@ -61,8 +61,10 @@ fun Navigation(
             }
         }
         composable<Main> {
-            main(modifier) {
-                navController.navigate(route = Authentication)
+            MainScreen(viewModel = reminderViewModel, modifier = modifier, onAddMed = {reminder ->
+                navController.navigate(route = Main)
+            }){
+
             }
         }
 
