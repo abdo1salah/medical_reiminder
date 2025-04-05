@@ -1,4 +1,4 @@
-package com.example.medicalreiminder
+package com.example.medicinereminder
 
 import org.junit.Test
 

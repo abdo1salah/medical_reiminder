@@ -1,4 +1,4 @@
-package com.example.medicalreiminder.ui.theme
+package com.example.medicinereminder.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
