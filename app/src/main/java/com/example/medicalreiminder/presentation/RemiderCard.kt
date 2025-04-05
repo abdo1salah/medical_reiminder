@@ -1,6 +1,7 @@
 package com.example.medicalreiminder.presentation
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -22,7 +23,6 @@ import com.example.medicalreiminder.model.Reminder
 
 @Composable
 fun RemiderCard(
-    modifier: Modifier = Modifier,
     reminder: Reminder,
     onDelete: (Reminder) -> Unit,
     onEditReminder: () -> Unit
@@ -30,25 +30,28 @@ fun RemiderCard(
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         shape = RoundedCornerShape(20.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB)), modifier = modifier
+        colors = CardDefaults.cardColors(containerColor = Color(0xFFBBDEFB)), modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth()
     )
     {
-        Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold)
-        Text("Time 1: ${reminder.firstTime}")
-        Text("Time 2: ${reminder.secondTime}")
-        Text("Time 3: ${reminder.thirdTime}")
-        Text("Frequency: ${reminder.dose}")
+        Column(modifier = Modifier.padding(5.dp)) {
+            Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold)
+            Text("Time 1: ${reminder.firstTime}")
+            Text("Time 2: ${reminder.secondTime}")
+            Text("Time 3: ${reminder.thirdTime}")
+            Text("Frequency: ${reminder.dose}")
 
-        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
-            IconButton(onClick = { onEditReminder() }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.Blue)
-            }
-            IconButton(onClick = { onDelete(reminder) }) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red)
+            Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                IconButton(onClick = { onEditReminder() }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.Blue)
+                }
+                IconButton(onClick = { onDelete(reminder) }) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.Red)
+                }
             }
         }
+
     }
 
 }

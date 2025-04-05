@@ -53,13 +53,13 @@ import com.example.medicalreiminder.viewModels.ReminderViewModel
 fun MainScreen(
     modifier: Modifier,
     viewModel: ReminderViewModel,
-    onAddMed: (String, String, String, String, String) -> Unit,
-    onDelete: (Reminder) -> Unit
+    onAddMed:(String, String, String, String, String)->Unit,
+    onEditMed: (Int,String, String, String, String, String) -> Unit,
 ) {
 
     val medications = viewModel.reminders.collectAsState(emptyList()).value.toMutableList()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         // Background Image
         Image(
             painter = painterResource(id = R.drawable.backg),
@@ -108,9 +108,9 @@ fun MainScreen(
                     itemsIndexed(medications) { index, med ->
                         RemiderCard(
                             reminder = med,
-                            modifier = modifier,
                             onDelete = { viewModel.deleteReminder(med) }) {
-                            onAddMed(
+                            onEditMed(
+                                med.id,
                                 med.name,
                                 med.firstTime,
                                 med.secondTime,

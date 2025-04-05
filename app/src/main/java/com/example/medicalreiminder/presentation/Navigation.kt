@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.example.medicalreiminder.model.utils.navigateAndDontComeBack
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
@@ -27,6 +28,24 @@ object SignUp
 @Serializable
 object Main
 
+@Serializable
+data class EditReminder(
+    val id: Int = 0,
+    val name: String,
+    val firstTime: String,
+    val secondTime: String,
+    val thirdTime: String,
+    val dose: String
+)
+
+@Serializable
+data class AddReminder(
+    val name: String,
+    val firstTime: String,
+    val secondTime: String,
+    val thirdTime: String,
+    val dose: String
+)
 
 @Composable
 fun Navigation(
@@ -54,23 +73,55 @@ fun Navigation(
             }
         }
         composable<SignUp> {
-            SignupScreen(modifier,authenticationViewModel, onSignUp = {
+            SignupScreen(modifier, authenticationViewModel, onSignUp = {
                 navController.navigate(route = Authentication)
-            }){
+            }) {
                 navController.navigate(route = SignIn)
             }
         }
         composable<Main> {
-            MainScreen(viewModel = reminderViewModel, modifier = modifier, onAddMed = {reminder ->
-                navController.navigate(route = Main)
-            }){
-
+            MainScreen(
+                viewModel = reminderViewModel,
+                modifier = modifier,
+                onAddMed = { name, ft, st, tt, dose ->
+                    navController.navigate(route = AddReminder(name, ft, st, tt, dose))
+                }) { id, name, ft, st, tt, dose ->
+                navController.navigate(route = EditReminder(id, name, ft, st, tt, dose))
             }
         }
-
+        composable<EditReminder> {
+            val args = it.toRoute<EditReminder>()
+            EditMedicationScreen(
+                modifier = modifier,
+                viewModel = reminderViewModel,
+                id = args.id,
+                medName = args.name,
+                medFirstTime = args.firstTime,
+                medSecondTime = args.secondTime,
+                medThirdTime = args.thirdTime,
+                medDose = args.dose
+            ) {
+                navController.popBackStack()
+            }
+        }
+        composable<AddReminder> {
+            val args = it.toRoute<EditReminder>()
+            AddMedicationScreen(
+                modifier = modifier,
+                viewModel = reminderViewModel,
+                medName = args.name,
+                medFirstTime = args.firstTime,
+                medSecondTime = args.secondTime,
+                medThirdTime = args.thirdTime,
+                medDose = args.dose
+            ) {
+                navController.popBackStack()
+            }
+        }
     }
 
 }
+
 
 @Composable
 fun auth(modifier: Modifier = Modifier, viewModel: ReminderViewModel, nav: () -> Unit) {
