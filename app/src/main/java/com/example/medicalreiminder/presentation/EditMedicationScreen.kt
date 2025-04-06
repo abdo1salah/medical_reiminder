@@ -135,7 +135,7 @@ fun EditMedicationScreen(
         if (isTimePicker1Visible.value){
             Dialog(onDismissRequest = {}) {
                 TimePicker(state = timePickerState)
-                Row {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Button(onClick = {isTimePicker1Visible.value = isTimePicker1Visible.value.not()}) {
                         Text("Cancel")
                     }
@@ -154,7 +154,7 @@ fun EditMedicationScreen(
         if (isTimePicker2Visible.value){
             Dialog(onDismissRequest = {}) {
                 TimePicker(state = timePickerState)
-                Row {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Button(onClick = {isTimePicker2Visible.value = isTimePicker2Visible.value.not()}) {
                         Text("Cancel")
                     }
@@ -173,7 +173,7 @@ fun EditMedicationScreen(
         if (isTimePicker3Visible.value){
             Dialog(onDismissRequest = {}) {
                 TimePicker(state = timePickerState)
-                Row {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Button(onClick = {isTimePicker3Visible.value = isTimePicker3Visible.value.not()}) {
                         Text("Cancel")
                     }

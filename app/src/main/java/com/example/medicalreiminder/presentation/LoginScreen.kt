@@ -84,8 +84,6 @@ fun LoginPage(
                     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 }
             }
-            val reminder = Reminder(0,"zeby","4","2","1","manga")
-            authViewModel.addReminderToFireBase(reminder,context)
         }
         ) {
             Text(text = "Login")

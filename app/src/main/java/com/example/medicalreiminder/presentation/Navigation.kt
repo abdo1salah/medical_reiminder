@@ -41,9 +41,9 @@ data class EditReminder(
 @Serializable
 data class AddReminder(
     val name: String,
-    val firstTime: String,
-    val secondTime: String,
-    val thirdTime: String,
+    val firstTime: Long,
+    val secondTime: Long,
+    val thirdTime: Long,
     val dose: String
 )
 

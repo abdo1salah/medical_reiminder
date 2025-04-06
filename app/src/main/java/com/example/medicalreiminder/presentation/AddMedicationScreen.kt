@@ -133,57 +133,67 @@ fun AddMedicationScreen(
         Spacer(modifier = Modifier.height(10.dp))
         if (isTimePicker1Visible.value){
             Dialog(onDismissRequest = {}) {
-                TimePicker(state = timePickerState)
-                Row {
-                    Button(onClick = {isTimePicker1Visible.value = isTimePicker1Visible.value.not()}) {
-                        Text("Cancel")
-                    }
-                    Button(onClick = {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                            set(Calendar.MINUTE,timePickerState.minute)
+                Column {
+                    TimePicker(state = timePickerState)
+                    Row {
+                        Button(onClick = {isTimePicker1Visible.value = isTimePicker1Visible.value.not()}) {
+                            Text("Cancel")
                         }
-                        time1 = calendar.timeInMillis
-                    }) {
-                        Text("Confirm")
+                        Button(onClick = {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                                set(Calendar.MINUTE,timePickerState.minute)
+                            }
+                            time1 = calendar.timeInMillis
+                            isTimePicker1Visible.value = isTimePicker1Visible.value.not()
+                        }) {
+                            Text("Confirm")
+                        }
                     }
                 }
+
             }
         }
         if (isTimePicker2Visible.value){
             Dialog(onDismissRequest = {}) {
-                TimePicker(state = timePickerState)
-                Row {
-                    Button(onClick = {isTimePicker2Visible.value = isTimePicker2Visible.value.not()}) {
-                        Text("Cancel")
-                    }
-                    Button(onClick = {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                            set(Calendar.MINUTE,timePickerState.minute)
+                Column {
+                    TimePicker(state = timePickerState)
+                    Row {
+                        Button(onClick = {isTimePicker2Visible.value = isTimePicker2Visible.value.not()}) {
+                            Text("Cancel")
                         }
-                        time2 = calendar.timeInMillis
-                    }) {
-                        Text("Confirm")
+                        Button(onClick = {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                                set(Calendar.MINUTE,timePickerState.minute)
+                            }
+                            time2 = calendar.timeInMillis
+                            isTimePicker2Visible.value = isTimePicker2Visible.value.not()
+                        }) {
+                            Text("Confirm")
+                        }
                     }
                 }
             }
         }
         if (isTimePicker3Visible.value){
             Dialog(onDismissRequest = {}) {
-                TimePicker(state = timePickerState)
-                Row {
-                    Button(onClick = {isTimePicker3Visible.value = isTimePicker3Visible.value.not()}) {
-                        Text("Cancel")
-                    }
-                    Button(onClick = {
-                        val calendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                            set(Calendar.MINUTE,timePickerState.minute)
+                Column {
+                    TimePicker(state = timePickerState)
+                    Row {
+                        Button(onClick = {isTimePicker3Visible.value = isTimePicker3Visible.value.not()}) {
+                            Text("Cancel")
                         }
-                        time3 = calendar.timeInMillis
-                    }) {
-                        Text("Confirm")
+                        Button(onClick = {
+                            val calendar = Calendar.getInstance().apply {
+                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
+                                set(Calendar.MINUTE,timePickerState.minute)
+                            }
+                            time3= calendar.timeInMillis
+                            isTimePicker3Visible.value = isTimePicker3Visible.value.not()
+                        }) {
+                            Text("Confirm")
+                        }
                     }
                 }
             }
