@@ -66,7 +66,9 @@ fun Navigation(
             }
         }
         composable<SignIn> {
-            LoginPage(modifier, authenticationViewModel, {
+            LoginPage(modifier, authenticationViewModel, onLogIn =  {
+                navController.navigateAndDontComeBack(Main)
+            }, onUserExists = {
                 navController.navigateAndDontComeBack(Main)
             }) {
                 navController.navigate(route = SignUp)
@@ -81,7 +83,8 @@ fun Navigation(
         }
         composable<Main> {
             MainScreen(
-                viewModel = reminderViewModel,
+                ReminderViewModel = reminderViewModel,
+                authenticationViewModel = authenticationViewModel,
                 modifier = modifier,
                 onAddMed = { name, ft, st, tt, dose ->
                     navController.navigate(route = AddReminder(name, ft, st, tt, dose))

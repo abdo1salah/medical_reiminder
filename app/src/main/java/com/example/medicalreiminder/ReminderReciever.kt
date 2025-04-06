@@ -25,9 +25,11 @@ class ReminderReciever : BroadcastReceiver() {
                     POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-                val notification = NotificationCompat.Builder(context,"rem")
+                val notification = NotificationCompat.Builder(context,"medicine_reminder")
                     .setContentTitle(reminder.name)
                     .setSmallIcon(R.drawable.android)
+                    .setContentText("Time to take your medicine")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .build()
                 NotificationManagerCompat.from(context).
                 notify(1,notification)

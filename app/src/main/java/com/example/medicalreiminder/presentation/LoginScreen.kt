@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,9 +35,13 @@ import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 fun LoginPage(
     modifier: Modifier = Modifier,
     authViewModel: AuthenticationViewModel,
+    onUserExists:()->Unit,
     onLogIn: () -> Unit,
     onSignUp: () -> Unit
 ) {
+    LaunchedEffect(rememberCoroutineScope()) {
+        onUserExists()
+    }
 
     var email by remember {
         mutableStateOf("")

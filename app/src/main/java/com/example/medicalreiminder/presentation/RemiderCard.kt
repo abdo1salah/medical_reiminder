@@ -15,11 +15,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.medicalreiminder.model.Reminder
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun RemiderCard(
@@ -27,6 +30,9 @@ fun RemiderCard(
     onDelete: (Reminder) -> Unit,
     onEditReminder: () -> Unit
 ) {
+    val format = remember {
+        SimpleDateFormat("hh:mm a", Locale.getDefault())
+    }
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         shape = RoundedCornerShape(20.dp),
@@ -37,9 +43,9 @@ fun RemiderCard(
     {
         Column(modifier = Modifier.padding(5.dp)) {
             Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold)
-            Text("Time 1: ${reminder.firstTime}")
-            Text("Time 2: ${reminder.secondTime}")
-            Text("Time 3: ${reminder.thirdTime}")
+            Text("Time 1: ${format.format(reminder.firstTime)}")
+            Text("Time 2: ${format.format(reminder.secondTime)}")
+            Text("Time 3: ${format.format(reminder.thirdTime)}")
             Text("Frequency: ${reminder.dose}")
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
