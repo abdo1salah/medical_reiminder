@@ -108,7 +108,8 @@ fun MainScreen(
                     itemsIndexed(medications) { index, med ->
                         RemiderCard(
                             reminder = med,
-                            onDelete = { viewModel.deleteReminder(med) }) {
+                            onDelete = { viewModel.deleteReminder(med)
+                            }) {
                             onEditMed(
                                 med.id,
                                 med.name,

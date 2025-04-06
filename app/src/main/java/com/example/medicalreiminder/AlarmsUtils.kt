@@ -25,7 +25,6 @@ fun setUpAlarm(context: Context, reminder: Reminder) {
 }
 
 fun cancelAlarm(context: Context, reminder: Reminder) {
-    val repeatEvery = 24L*60L*60L*1000L
     val intent = Intent(context, ReminderReciever::class.java).apply {
         putExtra("Reminder", Gson().toJson(reminder))
     }

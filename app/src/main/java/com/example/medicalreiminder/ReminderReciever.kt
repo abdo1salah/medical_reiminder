@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.material3.Button
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -24,15 +25,23 @@ class ReminderReciever : BroadcastReceiver() {
                     POST_NOTIFICATIONS
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
-
+                val notification = NotificationCompat.Builder(context,"rem")
+                    .setContentTitle(reminder.name)
+                    .setSmallIcon(R.drawable.android)
+                    .build()
+                NotificationManagerCompat.from(context).
+                notify(1,notification)
+                Toast.makeText(context, "high version", Toast.LENGTH_SHORT).show()
             }
         }
         else{
-            val notification = NotificationCompat.Builder(context)
+            val notification = NotificationCompat.Builder(context,"rem")
                 .setContentTitle(reminder.name)
+                .setSmallIcon(R.drawable.android)
                 .build()
             NotificationManagerCompat.from(context).
             notify(1,notification)
+            Toast.makeText(context, "low versions", Toast.LENGTH_SHORT).show()
         }
     }
 }

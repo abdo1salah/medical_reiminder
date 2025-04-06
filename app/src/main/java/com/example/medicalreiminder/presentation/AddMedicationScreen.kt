@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.medicalreiminder.model.Reminder
+import com.example.medicalreiminder.setUpAlarm
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
 import java.text.SimpleDateFormat
@@ -260,6 +261,7 @@ fun AddMedicationScreen(
                        reminder
                     )
                     authenticationViewModel.addReminderToFireBase(reminder,context)
+                    setUpAlarm(context,reminder)
                     back()
                 }
             },
