@@ -32,18 +32,16 @@ object Main
 data class EditReminder(
     val id: Int = 0,
     val name: String,
-    val firstTime: Long,
-    val secondTime: Long,
-    val thirdTime: Long,
+    val time: Long,
+    val timeOffset: Long,
     val dose: String
 )
 
 @Serializable
 data class AddReminder(
     val name: String,
-    val firstTime: Long,
-    val secondTime: Long,
-    val thirdTime: Long,
+    val time: Long,
+    val timeOffset: Long,
     val dose: String
 )
 
@@ -86,10 +84,10 @@ fun Navigation(
                 ReminderViewModel = reminderViewModel,
                 authenticationViewModel = authenticationViewModel,
                 modifier = modifier,
-                onAddMed = { name, ft, st, tt, dose ->
-                    navController.navigate(route = AddReminder(name, ft, st, tt, dose))
-                }) { id, name, ft, st, tt, dose ->
-                navController.navigate(route = EditReminder(id, name, ft, st, tt, dose))
+                onAddMed = { name, ft, tf, dose ->
+                    navController.navigate(route = AddReminder(name, ft, tf, dose))
+                }) { id, name, ft, tf, dose ->
+                navController.navigate(route = EditReminder(id, name, ft, tf, dose))
             }
         }
         composable<EditReminder> {
@@ -100,9 +98,8 @@ fun Navigation(
                 authenticationViewModel = authenticationViewModel,
                 id = args.id,
                 medName = args.name,
-                medFirstTime = args.firstTime,
-                medSecondTime = args.secondTime,
-                medThirdTime = args.thirdTime,
+                medFirstTime = args.time,
+                timeOffset = args.timeOffset,
                 medDose = args.dose
             ) {
                 navController.popBackStack()
@@ -115,9 +112,8 @@ fun Navigation(
                 reminderViewModel = reminderViewModel,
                 authenticationViewModel = authenticationViewModel,
                 medName = args.name,
-                medFirstTime = args.firstTime,
-                medSecondTime = args.secondTime,
-                medThirdTime = args.thirdTime,
+                medFirstTime = args.time,
+                timeOffset = args.timeOffset,
                 medDose = args.dose
             ) {
                 navController.popBackStack()

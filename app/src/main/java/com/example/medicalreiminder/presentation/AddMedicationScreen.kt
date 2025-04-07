@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -51,8 +52,7 @@ fun AddMedicationScreen(
     modifier: Modifier,
     medName: String,
     medFirstTime: Long,
-    medSecondTime: Long,
-    medThirdTime: Long,
+    timeOffset: Long,
     medDose: String,
     reminderViewModel: ReminderViewModel,
     authenticationViewModel: AuthenticationViewModel,
@@ -62,31 +62,16 @@ fun AddMedicationScreen(
     val isTimePicker1Visible = remember {
         mutableStateOf(false)
     }
-    val isTimePicker2Visible = remember {
-        mutableStateOf(false)
-    }
-    val isTimePicker3Visible = remember {
-        mutableStateOf(false)
-    }
     val format = remember {
         SimpleDateFormat("hh:mm a", Locale.getDefault())
     }
     var medName by remember { mutableStateOf(medName) }
     var time1 by remember { mutableStateOf(medFirstTime) }
-    var time2 by remember { mutableStateOf(medSecondTime) }
-    var time3 by remember { mutableStateOf(medThirdTime) }
+    var timeDelta by remember { mutableStateOf("") }
     var frequency by remember { mutableStateOf(medDose) }
     val context = LocalContext.current
 
     // Time Picker dialogs
-    fun showTimePicker(currentTime: String, onTimeSelected: (String) -> Unit) {
-        val hour = currentTime.substringBefore(":").toInt()
-        val minute = currentTime.substringAfter(":").toInt()
-        TimePickerDialog(context, { _, h, m ->
-            onTimeSelected(String.format("%02d:%02d", h, m))
-        }, hour, minute, true).show()
-    }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -132,18 +117,20 @@ fun AddMedicationScreen(
         )
 
         Spacer(modifier = Modifier.height(10.dp))
-        if (isTimePicker1Visible.value){
+        if (isTimePicker1Visible.value) {
             Dialog(onDismissRequest = {}) {
                 Column {
                     TimePicker(state = timePickerState)
                     Row {
-                        Button(onClick = {isTimePicker1Visible.value = isTimePicker1Visible.value.not()}) {
+                        Button(onClick = {
+                            isTimePicker1Visible.value = isTimePicker1Visible.value.not()
+                        }) {
                             Text("Cancel")
                         }
                         Button(onClick = {
                             val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                                set(Calendar.MINUTE,timePickerState.minute)
+                                set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                                set(Calendar.MINUTE, timePickerState.minute)
                             }
                             time1 = calendar.timeInMillis
                             isTimePicker1Visible.value = isTimePicker1Visible.value.not()
@@ -155,50 +142,7 @@ fun AddMedicationScreen(
 
             }
         }
-        if (isTimePicker2Visible.value){
-            Dialog(onDismissRequest = {}) {
-                Column {
-                    TimePicker(state = timePickerState)
-                    Row {
-                        Button(onClick = {isTimePicker2Visible.value = isTimePicker2Visible.value.not()}) {
-                            Text("Cancel")
-                        }
-                        Button(onClick = {
-                            val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                                set(Calendar.MINUTE,timePickerState.minute)
-                            }
-                            time2 = calendar.timeInMillis
-                            isTimePicker2Visible.value = isTimePicker2Visible.value.not()
-                        }) {
-                            Text("Confirm")
-                        }
-                    }
-                }
-            }
-        }
-        if (isTimePicker3Visible.value){
-            Dialog(onDismissRequest = {}) {
-                Column {
-                    TimePicker(state = timePickerState)
-                    Row {
-                        Button(onClick = {isTimePicker3Visible.value = isTimePicker3Visible.value.not()}) {
-                            Text("Cancel")
-                        }
-                        Button(onClick = {
-                            val calendar = Calendar.getInstance().apply {
-                                set(Calendar.HOUR_OF_DAY,timePickerState.hour)
-                                set(Calendar.MINUTE,timePickerState.minute)
-                            }
-                            time3= calendar.timeInMillis
-                            isTimePicker3Visible.value = isTimePicker3Visible.value.not()
-                        }) {
-                            Text("Confirm")
-                        }
-                    }
-                }
-            }
-        }
+
         // Time 1 Picker
         OutlinedButton(
             onClick = {
@@ -210,24 +154,27 @@ fun AddMedicationScreen(
         }
 
         Spacer(modifier = Modifier.height(10.dp))
+        OutlinedTextField(
+            value = timeDelta,
+            onValueChange = {
+                try {
+                    timeDelta = it
+                } catch (e: Exception) {
 
+                }
+            },
+            label = { Text("Repetition time offset") },
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedTextColor = Color.Black,
+                unfocusedTextColor = Color.DarkGray,
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent
+            )
+
+        )
         // Time 2 Picker
-        OutlinedButton(
-            onClick = { isTimePicker2Visible.value = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Time 2: ${format.format(time2)}")
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Time 3 Picker
-        OutlinedButton(
-            onClick = {isTimePicker3Visible.value = true },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Time 3: ${format.format(time3)}")
-        }
 
         Spacer(modifier = Modifier.height(10.dp))
 
@@ -250,18 +197,25 @@ fun AddMedicationScreen(
         Button(
             onClick = {
                 if (medName.isNotBlank()) {
-                    val reminder =  Reminder(
+                    var reminder = Reminder(
                         name = medName,
-                        firstTime = time1,
-                        secondTime = time2,
-                        thirdTime = time3,
+                        time = time1,
+                        timeOffset = timeDelta.toLong(),
                         dose = frequency
                     )
                     reminderViewModel.addReminder(
-                       reminder
+                        reminder
                     )
-                    authenticationViewModel.addReminderToFireBase(reminder,context)
-                    setUpAlarm(context,reminder)
+                    //reminder.id = reminderViewModel.lastInsertedId.value.toInt()
+                    reminder = Reminder(
+                        id = reminderViewModel.lastInsertedId.value.toInt()+1,
+                        name = medName,
+                        time = time1,
+                        timeOffset = timeDelta.toLong(),
+                        dose = frequency
+                    )
+                    authenticationViewModel.addReminderToFireBase(reminder, context)
+                    setUpAlarm(context, reminder)
                     back()
                 }
             },

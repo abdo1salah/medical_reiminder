@@ -40,7 +40,10 @@ fun LoginPage(
     onSignUp: () -> Unit
 ) {
     LaunchedEffect(rememberCoroutineScope()) {
-        onUserExists()
+        if (authViewModel.auth.currentUser!=null){
+            onUserExists()
+
+        }
     }
 
     var email by remember {

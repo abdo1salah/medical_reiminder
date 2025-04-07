@@ -24,10 +24,11 @@ class ReminderViewModel(app: Application) : AndroidViewModel(app) {
     var reminders = db.getReminders()
     var prodName by mutableStateOf("")
     val scanner = BarcodeScanner(app)
+    var lastInsertedId = mutableStateOf(0L)
 
     fun addReminder(reminder: Reminder) {
         viewModelScope.launch(Dispatchers.IO) {
-            db.upsertReminder(reminder)
+            lastInsertedId.value = db.upsertReminder(reminder)
         }
     }
 

@@ -20,6 +20,7 @@ class ReminderReciever : BroadcastReceiver() {
         val reminder = Gson().fromJson(reminderJson, Reminder::class.java)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Toast.makeText(context, "recieved", Toast.LENGTH_SHORT).show()
             if (ContextCompat.checkSelfPermission(
                     context,
                     POST_NOTIFICATIONS

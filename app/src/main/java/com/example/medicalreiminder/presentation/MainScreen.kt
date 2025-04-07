@@ -38,8 +38,8 @@ fun MainScreen(
     modifier: Modifier,
     ReminderViewModel: ReminderViewModel,
     authenticationViewModel: AuthenticationViewModel,
-    onAddMed: (String, Long, Long, Long, String) -> Unit,
-    onEditMed: (Int, String, Long, Long, Long, String) -> Unit,
+    onAddMed: (String, Long, Long, String) -> Unit,
+    onEditMed: (Int, String, Long, Long, String) -> Unit,
 ) {
 
     val medications = ReminderViewModel.reminders.collectAsState(emptyList()).value.toMutableList()
@@ -72,7 +72,7 @@ fun MainScreen(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { onAddMed("", 0L, 0L, 0L, "") },
+                    onClick = { onAddMed("", 0L, 0L, "") },
                     shape = RoundedCornerShape(20.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF77AADA)),
                     modifier = Modifier
@@ -100,9 +100,8 @@ fun MainScreen(
                             onEditMed(
                                 med.id,
                                 med.name,
-                                med.firstTime,
-                                med.secondTime,
-                                med.thirdTime,
+                                med.time,
+                                med.timeOffset,
                                 med.dose
                             )
                         }
@@ -111,7 +110,7 @@ fun MainScreen(
             }
         }
         FloatingActionButton(
-            onClick = { onAddMed("", 0L, 0L, 0L, "") },
+            onClick = { onAddMed("", 0L, 0L, "") },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(16.dp),
