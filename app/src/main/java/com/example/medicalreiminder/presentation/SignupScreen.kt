@@ -54,8 +54,8 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
 
         // Pills Image
         Image(
-            painter = painterResource(id = R.drawable.pills),
-            contentDescription = "pills",
+            painter = painterResource(id = R.drawable.ggk),
+            contentDescription = "ggk",
             modifier = Modifier.size(120.dp)
         )
 
@@ -151,7 +151,7 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
                     .padding(start = 4.dp)
                     .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
             ) {
-                Text("Log in", fontSize = 14.sp, color = Color.Blue)
+                Text("Log in", fontSize = 14.sp, color = Color.White)
             }
         }
     }

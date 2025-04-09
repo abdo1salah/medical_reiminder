@@ -26,6 +26,7 @@ import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -67,7 +68,7 @@ fun EditMedicationScreen(
         SimpleDateFormat("hh:mm a", Locale.getDefault())
     }
     var medName by remember { mutableStateOf(medName) }
-    var time1 by remember { mutableStateOf(medFirstTime) }
+    var time1 by remember { mutableLongStateOf(medFirstTime) }
     var timeDelta by remember { mutableStateOf(timeOffset.toString()) }
     var frequency by remember { mutableStateOf(medDose) }
 
