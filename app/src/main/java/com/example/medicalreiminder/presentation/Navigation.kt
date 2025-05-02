@@ -74,7 +74,7 @@ fun Navigation(
         }
         composable<SignUp> {
             SignupScreen(modifier, authenticationViewModel, onSignUp = {
-                navController.navigate(route = Authentication)
+                navController.navigate(route = SignIn)
             }) {
                 navController.navigate(route = SignIn)
             }
