@@ -32,6 +32,27 @@ import com.example.medicalreiminder.R
 import com.example.medicalreiminder.cancelAlarm
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
+import android.content.ActivityNotFoundException
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
+
+fun sendEmergencyMessage(context: Context) {
+    val message = "Emergency! I need help. Here's my location: https://maps.google.com/?q=37.4219983,-122.084" // sample location
+
+    val smsIntent = Intent(Intent.ACTION_VIEW).apply {
+        data = Uri.parse("sms:")
+        putExtra("sms_body", message)
+    }
+
+    try {
+        context.startActivity(smsIntent)
+    } catch (e: ActivityNotFoundException) {
+        Toast.makeText(context, "No messaging app found", Toast.LENGTH_SHORT).show()
+    }
+}
+
 
 @Composable
 fun MainScreen(
@@ -109,6 +130,18 @@ fun MainScreen(
                 }
             }
         }
+        FloatingActionButton(
+            onClick = { sendEmergencyMessage(context) },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 90.dp), // 90 to leave space above the "+"
+            shape = CircleShape,
+            containerColor = Color.Red
+        ) {
+            Text("SOS", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+        }
+
+
         FloatingActionButton(
             onClick = { onAddMed("", 0L, 0L, "") },
             modifier = Modifier
