@@ -53,6 +53,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material3.Scaffold
 
 
@@ -70,7 +71,7 @@ fun MainScreen(
     val medications = ReminderViewModel.reminders.collectAsState(emptyList()).value.toMutableList()
     val context = LocalContext.current
 
-    var menuExpanded by remember { mutableStateOf(false) }
+    var menuExpanded by rememberSaveable { mutableStateOf(false) }
 
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
@@ -97,7 +98,7 @@ fun MainScreen(
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)
+                .padding(6.dp)
         ) {
             IconButton(onClick = { menuExpanded = true }) {
                 Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.Black)
@@ -146,7 +147,7 @@ fun MainScreen(
                 }
             }
         } else {
-            LazyColumn(modifier = Modifier.padding(5.dp)) {
+            LazyColumn(modifier = Modifier.padding(top=40.dp)) {
                 items(medications) { med ->
                     RemiderCard(
                         reminder = med,
