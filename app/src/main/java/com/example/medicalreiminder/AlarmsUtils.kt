@@ -29,7 +29,7 @@ fun setUpAlarm(context: Context, reminder: Reminder) {
 
 fun cancelAlarm(context: Context, reminder: Reminder) {
     val intent = Intent(context, ReminderReciever::class.java)
-    Toast.makeText(context, "alarm canceled ${reminder.id}, ${reminder.name}", Toast.LENGTH_SHORT).show()
+    Toast.makeText(context, "alarm canceled , ${reminder.name}", Toast.LENGTH_SHORT).show()
     val pendingIntent = PendingIntent.getBroadcast(
         context,
         reminder.id,
