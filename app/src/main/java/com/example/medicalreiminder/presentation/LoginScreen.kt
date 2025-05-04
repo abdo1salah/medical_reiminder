@@ -140,5 +140,17 @@ fun LoginPage(
         TextButton(onClick = { onSignUp() }) {
             Text(text = "Don't have an account, Signup")
         }
+
+        TextButton(onClick = {
+            if (email.isNotBlank()) {
+                authViewModel.sendPasswordResetEmail(email, context)
+            } else {
+                Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
+            }
+        }) {
+            Text(text = "Forgot Password?")
+        }
+
+
     }
 }

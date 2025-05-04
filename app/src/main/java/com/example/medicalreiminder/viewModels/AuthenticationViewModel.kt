@@ -81,6 +81,23 @@ class AuthenticationViewModel : ViewModel() {
             }
     }
 
+    fun sendPasswordResetEmail(email: String, context: Context) {
+        if (email.isBlank()) {
+            Toast.makeText(context, "Please enter your email first", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        auth.sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Toast.makeText(context, "Password reset email sent", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Error: ${task.exception?.localizedMessage}", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+
     private fun verifyEmail(context: Context) {
         auth.currentUser!!.sendEmailVerification()
             .addOnCompleteListener {
