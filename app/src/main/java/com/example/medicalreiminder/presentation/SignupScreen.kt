@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.medicalreiminder.R
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
-
+import androidx.compose.foundation.isSystemInDarkTheme
 
 @Composable
 fun SignupScreen(
@@ -39,7 +39,14 @@ fun SignupScreen(
     var password by remember { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
     val context = LocalContext.current
-
+    val isDarkTheme = isSystemInDarkTheme()
+    var textColor by remember { mutableStateOf(Color.Black) }
+    if (isDarkTheme){
+        textColor = Color.White
+    }
+    else{
+        Color.Black
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -72,7 +79,7 @@ fun SignupScreen(
             text = "Let's Sign You up",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF3E206D)
+            color = Color(0xFF502693)
         )
         Text(
             text = "Hello and Welcome!",
@@ -96,7 +103,7 @@ fun SignupScreen(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text("Email") },
+            label = { Text("Email", color = textColor) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth()
         )
@@ -107,8 +114,8 @@ fun SignupScreen(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Password") },
-            placeholder = { Text("at least 8 characters") },
+            label = { Text("Password", color = textColor) },
+            placeholder = { Text("at least 8 characters", color = textColor) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
@@ -151,7 +158,7 @@ fun SignupScreen(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Already have an account? ", fontSize = 14.sp, color = Color.Gray)
+            Text("Already have an account? ", fontSize = 14.sp, color = textColor)
             TextButton(
                 onClick = { goToLogin() },
                 modifier = Modifier

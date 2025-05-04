@@ -1,5 +1,6 @@
 package com.example.medicalreiminder.presentation
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +37,14 @@ fun RemiderCard(
     val format = remember {
         SimpleDateFormat("hh:mm a", Locale.getDefault())
     }
+    val isDarkTheme = isSystemInDarkTheme()
+    var textColor by remember { mutableStateOf(Color.Black) }
+    if (isDarkTheme){
+        textColor = Color.White
+    }
+    else{
+        Color.Black
+    }
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
         shape = RoundedCornerShape(20.dp),
@@ -42,10 +54,10 @@ fun RemiderCard(
     )
     {
         Column(modifier = Modifier.padding(5.dp)) {
-            Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold, color = Color.Black)
-            Text("Time : ${format.format(reminder.time)}", color = Color.Black)
-            Text("Every: ${reminder.timeOffset}", color = Color.Black)
-            Text("Frequency: ${reminder.dose}", color = Color.Black)
+            Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold, color = textColor)
+            Text("Time : ${format.format(reminder.time)}", color = textColor)
+            Text("Every: ${reminder.timeOffset} hours", color = textColor)
+            Text("Frequency: ${reminder.dose}", color = textColor)
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 IconButton(onClick = { onEditReminder() }) {

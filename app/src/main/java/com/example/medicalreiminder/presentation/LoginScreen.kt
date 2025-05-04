@@ -2,6 +2,7 @@ package com.example.medicalreiminder.presentation
 
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -60,11 +61,19 @@ fun LoginPage(
     var passwordVisible by remember { mutableStateOf(false) }
     val authState = authViewModel.auth
     val context = LocalContext.current
+    val isDarkTheme = isSystemInDarkTheme()
+    var textColor by remember { mutableStateOf(Color.Black) }
+    if (isDarkTheme) {
+        textColor = Color.White
+    } else {
+        Color.Black
+    }
     LaunchedEffect(Unit) {
-        if(authState.currentUser != null){
+        if (authState.currentUser != null) {
             onUserExists()
         }
     }
+
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -73,7 +82,8 @@ fun LoginPage(
         Image(
             painter = painterResource(id = R.drawable.ggk),
             contentDescription = "ggk",
-            modifier = Modifier.size(200.dp)
+            modifier = Modifier
+                .size(200.dp)
                 .offset(x = 1.dp, y = 4.dp)
         )
         Text(
@@ -87,7 +97,7 @@ fun LoginPage(
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
-            label = { Text(text = "Email") },
+            label = { Text(text = "Email", color = textColor) },
             modifier = Modifier
                 .fillMaxWidth()  // Only added this line
                 .padding(horizontal = 16.dp)  // And this line
@@ -97,7 +107,7 @@ fun LoginPage(
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text(text = "Password") },
+            label = { Text(text = "Password", color = textColor) },
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             trailingIcon = {
                 IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -138,7 +148,7 @@ fun LoginPage(
         Spacer(modifier = Modifier.height(10.dp))
 
         TextButton(onClick = { onSignUp() }) {
-            Text(text = "Don't have an account, Signup")
+            Text(text = "Don't have an account, Signup", color = textColor)
         }
 
         TextButton(onClick = {
@@ -148,7 +158,7 @@ fun LoginPage(
                 Toast.makeText(context, "Please enter your email", Toast.LENGTH_SHORT).show()
             }
         }) {
-            Text(text = "Forgot Password?")
+            Text(text = "Forgot Password?", color = textColor)
         }
 
 
