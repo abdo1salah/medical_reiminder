@@ -17,6 +17,7 @@ import kotlinx.coroutines.tasks.await
 
 class AuthenticationViewModel : ViewModel() {
     val auth = Firebase.auth
+
     val firestore = Firebase.firestore
     fun signUp(
         email: String,

@@ -42,10 +42,10 @@ fun RemiderCard(
     )
     {
         Column(modifier = Modifier.padding(5.dp)) {
-            Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold)
-            Text("Time : ${format.format(reminder.time)}")
-            Text("Every: ${reminder.timeOffset}")
-            Text("Frequency: ${reminder.dose}")
+            Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold, color = Color.Black)
+            Text("Time : ${format.format(reminder.time)}", color = Color.Black)
+            Text("Every: ${reminder.timeOffset}", color = Color.Black)
+            Text("Frequency: ${reminder.dose}", color = Color.Black)
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 IconButton(onClick = { onEditReminder() }) {

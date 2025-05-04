@@ -1,6 +1,8 @@
 package com.example.medicalreiminder.viewModels
 
 import android.app.Application
+import android.content.Context
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -38,21 +40,26 @@ class ReminderViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
-    fun scanBarcode() {
-        viewModelScope.launch {
-            scanner.startScan()
-            val endPoint = getEndpoint(scanner.barCodeResults.value!!)
-            try {
-                prodName = BarcodeApi.retrofitService.getData(endPoint).products[0].brand
-            } catch (e: Exception) {
-
+    fun scanBarcode(context: Context) {
+        scanner.startScan(
+            onSuccess = { barcode ->
+                viewModelScope.launch {
+                    val endPoint = getEndpoint(barcode)
+                    try {
+                        prodName = BarcodeApi.retrofitService.getData(endPoint).products[0].manufacturer
+                    } catch (e: Exception) {
+                        Log.d("trace", "API call failed: ${e.localizedMessage}")
+                    }
+                }
+                Toast.makeText(context, prodName, Toast.LENGTH_SHORT).show()
             }
-        }
-
+        )
     }
-    fun loadIntoDb(reminders:List<Reminder>){
+
+
+    fun loadIntoDb(reminders: List<Reminder>) {
         viewModelScope.launch {
-            for (reminder in reminders){
+            for (reminder in reminders) {
                 db.upsertReminder(reminder)
             }
         }

@@ -1,5 +1,11 @@
 package com.example.medicalreiminder.presentation
 
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.media.audiofx.BassBoost
+import android.net.Uri
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,13 +38,10 @@ import com.example.medicalreiminder.R
 import com.example.medicalreiminder.cancelAlarm
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import com.example.medicalreiminder.model.utils.checkGpsState
 import com.example.medicalreiminder.model.utils.getCurrentLocation
 import com.example.medicalreiminder.model.utils.hasPermission
@@ -49,15 +52,16 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.material3.Scaffold
+import androidx.core.content.ContextCompat
 
 
-
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
@@ -72,8 +76,10 @@ fun MainScreen(
     val context = LocalContext.current
 
     var menuExpanded by rememberSaveable { mutableStateOf(false) }
-
-    val requestPermissionLauncher =
+    val permission = android.Manifest.permission.POST_NOTIFICATIONS
+    var showPermissionDeniedDialog by remember { mutableStateOf(false) }
+    val shouldRequestPermission = remember { mutableStateOf(false) }
+    val requestLocationPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted: Boolean ->
@@ -84,9 +90,62 @@ fun MainScreen(
                 }
             }
         )
+    val requestNotificationPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted: Boolean ->
+                if (!isGranted) {
+                    showPermissionDeniedDialog = true
+                }
+                }
+        )
+    val isGranted = ContextCompat.checkSelfPermission(
+        context, permission
+    ) == PackageManager.PERMISSION_GRANTED
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && !isGranted) {
+            shouldRequestPermission.value = true
+        }
+    }
+
+    if (shouldRequestPermission.value) {
+        LaunchedEffect(shouldRequestPermission.value) {
+            requestNotificationPermissionLauncher.launch(permission)
+            shouldRequestPermission.value = false
+        }
+    }
 
     Box(modifier = modifier.fillMaxSize()) {
         // Background
+        if (showPermissionDeniedDialog) {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { showPermissionDeniedDialog = false },
+                title = { Text("Notification Permission Required") },
+                text = {
+                    Text("This app requires notification permissions to remind you about your medications. Please enable it from settings.")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showPermissionDeniedDialog = false
+                            // Optional: Open app settings
+                            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                                data = Uri.fromParts("package", context.packageName, null)
+                            }
+                            context.startActivity(intent)
+                        }
+                    ) {
+                        Text("Open Settings")
+                    }
+                },
+                dismissButton = {
+                    Button(onClick = { showPermissionDeniedDialog = false }) {
+                        Text("Dismiss")
+                    }
+                }
+            )
+        }
+
         Image(
             painter = painterResource(id = R.drawable.backg),
             contentDescription = "Background",
@@ -111,7 +170,7 @@ fun MainScreen(
                     text = { Text("Logout") },
                     onClick = {
                         menuExpanded = false
-                       // authenticationViewModel.logout()
+                       authenticationViewModel.logOut()
                         onLogout()
                     }
                 )
@@ -180,7 +239,7 @@ fun MainScreen(
                         Toast.makeText(context, "Please turn GPS on", Toast.LENGTH_SHORT).show()
                     }
                 } else {
-                    requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                    requestLocationPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             },
             modifier = Modifier

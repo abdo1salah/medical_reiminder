@@ -90,7 +90,8 @@ fun EditMedicationScreen(
                 Text("Cancel", color = Color.Blue)
             }
             IconButton(onClick = {
-                // TODO: Add barcode scan logic
+                reminderViewModel.scanBarcode(context)
+                medName = reminderViewModel.prodName
             }) {
                 Icon(
                     imageVector = Icons.Rounded.QrCodeScanner,

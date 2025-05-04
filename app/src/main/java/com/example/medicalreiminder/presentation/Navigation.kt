@@ -1,6 +1,8 @@
 package com.example.medicalreiminder.presentation
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -16,8 +18,6 @@ import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import com.example.medicalreiminder.viewModels.ReminderViewModel
 import kotlinx.serialization.Serializable
 
-@Serializable
-object Authentication
 
 @Serializable
 object SignIn
@@ -45,6 +45,7 @@ data class AddReminder(
     val dose: String
 )
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun Navigation(
     modifier: Modifier = Modifier,
@@ -55,14 +56,6 @@ fun Navigation(
     NavHost(navController = navController, startDestination = SignIn) {
         val authenticationViewModel = AuthenticationViewModel()
         val reminderViewModel = ReminderViewModel(appContext)
-        composable<Authentication> {
-
-            val viewModel = ReminderViewModel(appContext)
-
-            auth(modifier, viewModel) {
-                navController.navigate(route = SignIn)
-            }
-        }
         composable<SignIn> {
             LoginPage(modifier, authenticationViewModel, onLogIn =  {
                 navController.navigateAndDontComeBack(Main)
@@ -73,7 +66,9 @@ fun Navigation(
             }
         }
         composable<SignUp> {
-            SignupScreen(modifier, authenticationViewModel, onSignUp = {
+            SignupScreen(modifier, authenticationViewModel, back = {
+                navController.popBackStack()
+            }, onSignUp = {
                 navController.navigate(route = SignIn)
             }) {
                 navController.navigate(route = SignIn)
@@ -130,35 +125,5 @@ fun Navigation(
 }
 
 
-@Composable
-fun auth(modifier: Modifier = Modifier, viewModel: ReminderViewModel, nav: () -> Unit) {
-    Column {
-        //Text("product${viewModel.prodName}", modifier = modifier)
-        Button(modifier = modifier, onClick = { viewModel.scanBarcode() }) {
-            Text("scan")
-        }
 
-    }
 
-}
-
-@Composable
-fun signin(modifier: Modifier = Modifier, nav: () -> Unit) {
-    Button(modifier = modifier, onClick = { nav() }) {
-        Text("SignIn screen")
-    }
-}
-
-@Composable
-fun signup(modifier: Modifier = Modifier, nav: () -> Unit) {
-    Button(modifier = modifier, onClick = { nav() }) {
-        Text("signUp screen")
-    }
-}
-
-@Composable
-fun main(modifier: Modifier = Modifier, nav: () -> Unit) {
-    Button(modifier = modifier, onClick = { nav() }) {
-        Text("main screen")
-    }
-}

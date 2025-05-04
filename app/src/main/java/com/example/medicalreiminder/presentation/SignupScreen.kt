@@ -27,7 +27,13 @@ import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 
 
 @Composable
-fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewModel,onSignUp:()->Unit, goToLogin: () -> Unit) {
+fun SignupScreen(
+    modifier: Modifier = Modifier,
+    viewModel: AuthenticationViewModel,
+    onSignUp: () -> Unit,
+    back: () -> Unit,
+    goToLogin: () -> Unit
+) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -45,7 +51,7 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = { /* Handle back navigation */ }) {
+            IconButton(onClick = { back() }) {
                 Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
             }
         }
@@ -120,14 +126,15 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
 
         // Sign Up Button
         Button(
-            onClick = { viewModel.signUp(email,password,name,context){state,message->
-                if (state){
-                    onSignUp()
+            onClick = {
+                viewModel.signUp(email, password, name, context) { state, message ->
+                    if (state) {
+                        onSignUp()
+                    } else {
+                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                    }
                 }
-                else{
-                    Toast.makeText(context,message, Toast.LENGTH_SHORT).show()
-                }
-            } },
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp),
@@ -146,12 +153,11 @@ fun SignupScreen(modifier: Modifier = Modifier,viewModel: AuthenticationViewMode
         ) {
             Text("Already have an account? ", fontSize = 14.sp, color = Color.Gray)
             TextButton(
-                onClick = {goToLogin() },
+                onClick = { goToLogin() },
                 modifier = Modifier
-                    .padding(start = 4.dp)
                     .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
             ) {
-                Text("Log in", fontSize = 14.sp, color = Color.White)
+                Text("Log in", fontSize = 14.sp, color = Color.Blue)
             }
         }
     }

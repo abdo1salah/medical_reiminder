@@ -6,7 +6,6 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions
 import com.google.mlkit.vision.codescanner.GmsBarcodeScanning
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.tasks.await
 
 
 class BarcodeScanner(
@@ -26,16 +25,21 @@ class BarcodeScanner(
     private val scanner = GmsBarcodeScanning.getClient(appContext, options)
     val barCodeResults = MutableStateFlow<String?>(null)
 
-    suspend fun startScan() {
-        try {
-            val result = scanner.startScan().await()
-
-            barCodeResults.value = result.displayValue
-
-        } catch (e: Exception) {
-            Log.d("debug", e.localizedMessage)
-        }
+    fun startScan(
+        onSuccess: (String) -> Unit,
+    ) {
+        scanner.startScan()
+            .addOnSuccessListener { barcode ->
+                barcode.displayValue?.let {
+                    barCodeResults.value = it
+                    onSuccess(it)
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.d("debug", "Scan failed: ${e.localizedMessage}")
+            }
     }
+
 
     /* alt:
     scanner.startScan()

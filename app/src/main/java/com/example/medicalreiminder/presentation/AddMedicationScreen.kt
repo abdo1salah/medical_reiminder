@@ -89,7 +89,7 @@ fun AddMedicationScreen(
                 Text("Cancel", color = Color.Blue)
             }
             IconButton(onClick = {
-                reminderViewModel.scanBarcode()
+                reminderViewModel.scanBarcode(context)
                 medName = reminderViewModel.prodName
 
             }) {
