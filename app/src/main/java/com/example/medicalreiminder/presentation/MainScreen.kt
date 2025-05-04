@@ -37,21 +37,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.Toast
-
-fun sendEmergencyMessage(context: Context) {
-    val message = "Emergency! I need help. Here's my location: https://maps.google.com/?q=37.4219983,-122.084" // sample location
-
-    val smsIntent = Intent(Intent.ACTION_VIEW).apply {
-        data = Uri.parse("sms:")
-        putExtra("sms_body", message)
-    }
-
-    try {
-        context.startActivity(smsIntent)
-    } catch (e: ActivityNotFoundException) {
-        Toast.makeText(context, "No messaging app found", Toast.LENGTH_SHORT).show()
-    }
-}
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import com.example.medicalreiminder.model.utils.checkGpsState
+import com.example.medicalreiminder.model.utils.getCurrentLocation
+import com.example.medicalreiminder.model.utils.hasPermission
+import com.example.medicalreiminder.model.utils.sendEmergencyMessage
 
 
 @Composable
@@ -65,6 +56,22 @@ fun MainScreen(
 
     val medications = ReminderViewModel.reminders.collectAsState(emptyList()).value.toMutableList()
     val context = LocalContext.current
+    var isPermissionGranted = hasPermission(context)
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted: Boolean ->
+                if (isGranted) {
+                    if (checkGpsState(context)) {
+                        getCurrentLocation(context) { lat, long ->
+                            sendEmergencyMessage(context, lat, long)
+                        }
+                    }
+
+
+                }
+            })
+
     Box(modifier = modifier.fillMaxSize()) {
         // Background Image
         Image(
@@ -108,15 +115,16 @@ fun MainScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(16.dp)
+                    .padding(5.dp)
             ) {
                 LazyColumn {
                     items(medications) { med ->
                         RemiderCard(
                             reminder = med,
-                            onDelete = { ReminderViewModel.deleteReminder(med)
+                            onDelete = {
+                                ReminderViewModel.deleteReminder(med)
                                 authenticationViewModel.deleteReminderFromFireBase(med)
-                                cancelAlarm(context,med)
+                                cancelAlarm(context, med)
                             }) {
                             onEditMed(
                                 med.id,
@@ -131,7 +139,23 @@ fun MainScreen(
             }
         }
         FloatingActionButton(
-            onClick = { sendEmergencyMessage(context) },
+            onClick = {
+                if (hasPermission(context)) {
+                    // Permission already granted, update the location
+                    if(checkGpsState(context)){
+                        getCurrentLocation(context) { lat, long ->
+                            sendEmergencyMessage(context, lat, long)
+                        }    
+                    }
+                    else{
+                        Toast.makeText(context, "Please turn GPS on", Toast.LENGTH_SHORT).show()
+                    }
+                    
+                } else {
+                    // Request location permission
+                    requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
+                }
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 16.dp, bottom = 90.dp), // 90 to leave space above the "+"
@@ -140,8 +164,7 @@ fun MainScreen(
         ) {
             Text("SOS", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
         }
-
-
+        
         FloatingActionButton(
             onClick = { onAddMed("", 0L, 0L, "") },
             modifier = Modifier

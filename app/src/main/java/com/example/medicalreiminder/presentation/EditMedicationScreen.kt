@@ -198,18 +198,18 @@ fun EditMedicationScreen(
                         timeOffset = timeDelta.toLong(),
                         dose = frequency
                     )
-                    reminderViewModel.addReminder(
-                        reminder
-                    )
-                    authenticationViewModel.addReminderToFireBase(reminder, context)
-                    cancelAlarm(context, reminder)
-                    setUpAlarm(context, reminder)
+                    reminderViewModel.addReminder(reminder) { insertedReminder ->
+                        authenticationViewModel.addReminderToFireBase(insertedReminder, context)
+                        cancelAlarm(context, reminder)
+                        setUpAlarm(context, insertedReminder)
+
+                    }
                     back()
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF77AADA))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
         ) {
             Text("Save", fontSize = 16.sp, color = Color.White)
         }

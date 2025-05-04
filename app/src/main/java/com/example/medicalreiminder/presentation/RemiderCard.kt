@@ -43,7 +43,7 @@ fun RemiderCard(
     {
         Column(modifier = Modifier.padding(5.dp)) {
             Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold)
-            Text("Time 1: ${format.format(reminder.time)}")
+            Text("Time : ${format.format(reminder.time)}")
             Text("Every: ${reminder.timeOffset}")
             Text("Frequency: ${reminder.dose}")
 

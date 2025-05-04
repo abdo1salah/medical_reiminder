@@ -198,31 +198,23 @@ fun AddMedicationScreen(
         Button(
             onClick = {
                 if (medName.isNotBlank()) {
-                    var reminder = Reminder(
+                    val reminder = Reminder(
                         name = medName,
                         time = time1,
                         timeOffset = timeDelta.toLong(),
                         dose = frequency
                     )
-                    reminderViewModel.addReminder(
-                        reminder
-                    )
-                    //reminder.id = reminderViewModel.lastInsertedId.value.toInt()
-                    reminder = Reminder(
-                        id = reminderViewModel.lastInsertedId.value.toInt()+1,
-                        name = medName,
-                        time = time1,
-                        timeOffset = timeDelta.toLong(),
-                        dose = frequency
-                    )
-                    authenticationViewModel.addReminderToFireBase(reminder, context)
-                    setUpAlarm(context, reminder)
+                    reminderViewModel.addReminder(reminder) { insertedReminder ->
+                        authenticationViewModel.addReminderToFireBase(insertedReminder, context)
+                        setUpAlarm(context, insertedReminder)
+
+                    }
                     back()
                 }
             },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF77AADA))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
         ) {
             Text("Save", fontSize = 16.sp, color = Color.White)
         }

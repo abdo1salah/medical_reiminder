@@ -60,7 +60,11 @@ fun LoginPage(
     var passwordVisible by remember { mutableStateOf(false) }
     val authState = authViewModel.auth
     val context = LocalContext.current
-
+    LaunchedEffect(Unit) {
+        if(authState.currentUser != null){
+            onUserExists()
+        }
+    }
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

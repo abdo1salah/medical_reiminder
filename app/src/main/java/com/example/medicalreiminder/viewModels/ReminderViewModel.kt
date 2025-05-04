@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.medicalreiminder.model.Api.BarcodeApi
 import com.example.medicalreiminder.model.DbHelper
 import com.example.medicalreiminder.model.Reminder
@@ -26,9 +25,10 @@ class ReminderViewModel(app: Application) : AndroidViewModel(app) {
     val scanner = BarcodeScanner(app)
     var lastInsertedId = mutableStateOf(0L)
 
-    fun addReminder(reminder: Reminder) {
+    fun addReminder(reminder: Reminder, onInserted: (Reminder) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
-            lastInsertedId.value = db.upsertReminder(reminder)
+            val id = db.upsertReminder(reminder)
+            onInserted(reminder.copy(id = id.toInt()))
         }
     }
 
