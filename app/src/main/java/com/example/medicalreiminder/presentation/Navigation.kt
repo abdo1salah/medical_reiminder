@@ -86,10 +86,16 @@ fun Navigation(
                 modifier = modifier,
                 onAddMed = { name, ft, tf, dose ->
                     navController.navigate(route = AddReminder(name, ft, tf, dose))
-                }) { id, name, ft, tf, dose ->
-                navController.navigate(route = EditReminder(id, name, ft, tf, dose))
-            }
+                },
+                onEditMed = { id, name, ft, tf, dose ->
+                    navController.navigate(route = EditReminder(id, name, ft, tf, dose))
+                },
+                onLogout = {
+                    navController.navigateAndDontComeBack(SignIn)
+                }
+            )
         }
+
         composable<EditReminder> {
             val args = it.toRoute<EditReminder>()
             EditMedicationScreen(

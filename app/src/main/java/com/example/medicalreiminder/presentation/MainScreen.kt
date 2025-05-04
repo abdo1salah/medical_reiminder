@@ -43,8 +43,21 @@ import com.example.medicalreiminder.model.utils.checkGpsState
 import com.example.medicalreiminder.model.utils.getCurrentLocation
 import com.example.medicalreiminder.model.utils.hasPermission
 import com.example.medicalreiminder.model.utils.sendEmergencyMessage
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.Scaffold
 
 
+
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     modifier: Modifier,
@@ -52,36 +65,57 @@ fun MainScreen(
     authenticationViewModel: AuthenticationViewModel,
     onAddMed: (String, Long, Long, String) -> Unit,
     onEditMed: (Int, String, Long, Long, String) -> Unit,
+    onLogout: () -> Unit
 ) {
-
     val medications = ReminderViewModel.reminders.collectAsState(emptyList()).value.toMutableList()
     val context = LocalContext.current
-    var isPermissionGranted = hasPermission(context)
+
+    var menuExpanded by remember { mutableStateOf(false) }
+
     val requestPermissionLauncher =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.RequestPermission(),
             onResult = { isGranted: Boolean ->
-                if (isGranted) {
-                    if (checkGpsState(context)) {
-                        getCurrentLocation(context) { lat, long ->
-                            sendEmergencyMessage(context, lat, long)
-                        }
+                if (isGranted && checkGpsState(context)) {
+                    getCurrentLocation(context) { lat, long ->
+                        sendEmergencyMessage(context, lat, long)
                     }
-
-
                 }
-            })
+            }
+        )
 
     Box(modifier = modifier.fillMaxSize()) {
-        // Background Image
+        // Background
         Image(
             painter = painterResource(id = R.drawable.backg),
             contentDescription = "Background",
             contentScale = ContentScale.FillBounds,
-            modifier = Modifier
-                .fillMaxSize()
-
+            modifier = Modifier.fillMaxSize()
         )
+
+        // Overflow menu (three dots)
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(16.dp)
+        ) {
+            IconButton(onClick = { menuExpanded = true }) {
+                Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = Color.Black)
+            }
+            DropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("Logout") },
+                    onClick = {
+                        menuExpanded = false
+                       // authenticationViewModel.logout()
+                        onLogout()
+                    }
+                )
+            }
+        }
 
         if (medications.isEmpty()) {
             Column(
@@ -112,59 +146,52 @@ fun MainScreen(
                 }
             }
         } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(5.dp)
-            ) {
-                LazyColumn {
-                    items(medications) { med ->
-                        RemiderCard(
-                            reminder = med,
-                            onDelete = {
-                                ReminderViewModel.deleteReminder(med)
-                                authenticationViewModel.deleteReminderFromFireBase(med)
-                                cancelAlarm(context, med)
-                            }) {
-                            onEditMed(
-                                med.id,
-                                med.name,
-                                med.time,
-                                med.timeOffset,
-                                med.dose
-                            )
-                        }
+            LazyColumn(modifier = Modifier.padding(5.dp)) {
+                items(medications) { med ->
+                    RemiderCard(
+                        reminder = med,
+                        onDelete = {
+                            ReminderViewModel.deleteReminder(med)
+                            authenticationViewModel.deleteReminderFromFireBase(med)
+                            cancelAlarm(context, med)
+                        }) {
+                        onEditMed(
+                            med.id,
+                            med.name,
+                            med.time,
+                            med.timeOffset,
+                            med.dose
+                        )
                     }
                 }
             }
         }
+
+        // SOS Button
         FloatingActionButton(
             onClick = {
                 if (hasPermission(context)) {
-                    // Permission already granted, update the location
-                    if(checkGpsState(context)){
+                    if (checkGpsState(context)) {
                         getCurrentLocation(context) { lat, long ->
                             sendEmergencyMessage(context, lat, long)
-                        }    
-                    }
-                    else{
+                        }
+                    } else {
                         Toast.makeText(context, "Please turn GPS on", Toast.LENGTH_SHORT).show()
                     }
-                    
                 } else {
-                    // Request location permission
                     requestPermissionLauncher.launch(android.Manifest.permission.ACCESS_FINE_LOCATION)
                 }
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 90.dp), // 90 to leave space above the "+"
+                .padding(end = 16.dp, bottom = 90.dp),
             shape = CircleShape,
             containerColor = Color.Red
         ) {
             Text("SOS", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
         }
-        
+
+        // "+" Add Med Button
         FloatingActionButton(
             onClick = { onAddMed("", 0L, 0L, "") },
             modifier = Modifier
@@ -176,7 +203,4 @@ fun MainScreen(
             Text("+", fontSize = 24.sp, color = Color.White)
         }
     }
-
-
 }
-
