@@ -225,6 +225,16 @@ fun MainScreen(
                     }
                 }
             }
+            FloatingActionButton(
+                onClick = { onAddMed("", 0L, 0L, "") },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp),
+                shape = CircleShape,
+                containerColor = Color(0xFF77AADA)
+            ) {
+                Text("+", fontSize = 24.sp, color = Color.White)
+            }
         }
 
         // SOS Button
@@ -232,6 +242,7 @@ fun MainScreen(
             onClick = {
                 if (hasPermission(context)) {
                     if (checkGpsState(context)) {
+                    //Toast.makeText(context, "has gps", Toast.LENGTH_SHORT).show()
                         getCurrentLocation(context) { lat, long ->
                             sendEmergencyMessage(context, lat, long)
                         }
@@ -252,15 +263,6 @@ fun MainScreen(
         }
 
         // "+" Add Med Button
-        FloatingActionButton(
-            onClick = { onAddMed("", 0L, 0L, "") },
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp),
-            shape = CircleShape,
-            containerColor = Color(0xFF77AADA)
-        ) {
-            Text("+", fontSize = 24.sp, color = Color.White)
-        }
+
     }
 }

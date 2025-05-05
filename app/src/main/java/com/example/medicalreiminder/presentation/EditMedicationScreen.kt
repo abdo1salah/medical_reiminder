@@ -185,7 +185,7 @@ fun EditMedicationScreen(
         OutlinedTextField(
             value = frequency,
             onValueChange = { frequency = it },
-            label = { Text("Frequency") },
+            label = { Text("Dose") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedTextColor =  textColor,
