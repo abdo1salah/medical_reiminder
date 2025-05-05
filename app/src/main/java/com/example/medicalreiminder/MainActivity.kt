@@ -29,27 +29,21 @@ import kotlin.coroutines.coroutineContext
 
 class MainActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
+
     @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-         auth = Firebase.auth
+        auth = Firebase.auth
         setContent {
 
             MedicalReiminderTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Navigation(modifier = Modifier.padding(innerPadding), appContext = application
+                    Navigation(
+                        modifier = Modifier.padding(innerPadding), appContext = application
                     )
                 }
             }
-        }
-    }
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        if (currentUser != null) {
-
         }
     }
 }
