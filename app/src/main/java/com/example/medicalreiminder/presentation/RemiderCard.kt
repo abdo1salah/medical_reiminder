@@ -40,7 +40,7 @@ fun RemiderCard(
     val isDarkTheme = isSystemInDarkTheme()
     var textColor by remember { mutableStateOf(Color.Black) }
     if (isDarkTheme){
-        textColor = Color.White
+        textColor = Color.Black
     }
     else{
         Color.Black
@@ -57,7 +57,7 @@ fun RemiderCard(
             Text("Name: ${reminder.name}", fontWeight = FontWeight.Bold, color = textColor)
             Text("Time : ${format.format(reminder.time)}", color = textColor)
             Text("Every: ${reminder.timeOffset} hours", color = textColor)
-            Text("Frequency: ${reminder.dose}", color = textColor)
+            Text("Dose: ${reminder.dose}mg", color = textColor)
 
             Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
                 IconButton(onClick = { onEditReminder() }) {

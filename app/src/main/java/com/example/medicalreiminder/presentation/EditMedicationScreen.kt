@@ -1,6 +1,7 @@
 package com.example.medicalreiminder.presentation
 
 import android.app.TimePickerDialog
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -73,7 +74,15 @@ fun EditMedicationScreen(
     var frequency by remember { mutableStateOf(medDose) }
 
     val context = LocalContext.current
+    val isDarkTheme = isSystemInDarkTheme()
 
+    var textColor by remember { mutableStateOf(Color.Black) }
+    if (isDarkTheme){
+        textColor = Color.White
+    }
+    else{
+        Color.Black
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -109,8 +118,8 @@ fun EditMedicationScreen(
             label = { Text("Medication name") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.DarkGray,
+                focusedTextColor =  textColor,
+                unfocusedTextColor = textColor,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent
             )
@@ -153,7 +162,7 @@ fun EditMedicationScreen(
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Time 1: ${format.format(time1)}")
+            Text("Time: ${format.format(time1)}")
         }
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -163,8 +172,8 @@ fun EditMedicationScreen(
             label = { Text("Repetition time offset") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.DarkGray,
+                focusedTextColor = textColor,
+                unfocusedTextColor = textColor,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent
             )
@@ -179,8 +188,8 @@ fun EditMedicationScreen(
             label = { Text("Frequency") },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
-                focusedTextColor = Color.Black,
-                unfocusedTextColor = Color.DarkGray,
+                focusedTextColor =  textColor,
+                unfocusedTextColor = textColor,
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent
             )

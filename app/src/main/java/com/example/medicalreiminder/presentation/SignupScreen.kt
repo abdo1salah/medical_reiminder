@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.example.medicalreiminder.R
 import com.example.medicalreiminder.viewModels.AuthenticationViewModel
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.ui.platform.LocalConfiguration
 
 @Composable
 fun SignupScreen(
@@ -47,127 +48,258 @@ fun SignupScreen(
     else{
         Color.Black
     }
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(20.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        // Back Button
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+    val config = LocalConfiguration.current.screenWidthDp
+    if (config<600) {
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            IconButton(onClick = { back() }) {
-                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+            // Back Button
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = { back() }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Pills Image
+            Image(
+                painter = painterResource(id = R.drawable.ggk),
+                contentDescription = "ggk",
+                modifier = Modifier.size(120.dp)
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Signup Texts
+            Text(
+                text = "Let's Sign You up",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFF502693)
+            )
+            Text(
+                text = "Hello and Welcome!",
+                fontSize = 14.sp,
+                color = Color.Gray
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Name Field
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Email Field
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email", color = textColor) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            // Password Field
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Password", color = textColor) },
+                placeholder = { Text("at least 8 characters", color = textColor) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(
+                            imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                            contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                        )
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Sign Up Button
+            Button(
+                onClick = {
+                    viewModel.signUp(email, password, name, context) { state, message ->
+                        if (state) {
+                            onSignUp()
+                        } else {
+                            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp),
+                shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
+            ) {
+                Text("Sign up", fontSize = 18.sp, color = Color.White)
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Already have an account? ", fontSize = 14.sp, color = textColor)
+                TextButton(
+                    onClick = { goToLogin() },
+                    modifier = Modifier
+                        .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
+                ) {
+                    Text("Log in", fontSize = 14.sp, color = Color.Blue)
+                }
             }
         }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Pills Image
-        Image(
-            painter = painterResource(id = R.drawable.ggk),
-            contentDescription = "ggk",
-            modifier = Modifier.size(120.dp)
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Signup Texts
-        Text(
-            text = "Let's Sign You up",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF502693)
-        )
-        Text(
-            text = "Hello and Welcome!",
-            fontSize = 14.sp,
-            color = Color.Gray
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Name Field
-        OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
-            label = { Text("Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Email Field
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email", color = textColor) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Password Field
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Password", color = textColor) },
-            placeholder = { Text("at least 8 characters", color = textColor) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            trailingIcon = {
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(
-                        imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
-                        contentDescription = if (passwordVisible) "Hide password" else "Show password"
-                    )
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        // Sign Up Button
-        Button(
-            onClick = {
-                viewModel.signUp(email, password, name, context) { state, message ->
-                    if (state) {
-                        onSignUp()
-                    } else {
-                        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }else{
+        Row {
+            Column(
+                modifier = modifier
+                    .weight(1f)
+                    .padding(10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Back Button
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = { back() }) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
                     }
                 }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp),
-            shape = RoundedCornerShape(12.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
-        ) {
-            Text("Sign up", fontSize = 18.sp, color = Color.White)
-        }
 
-        Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text("Already have an account? ", fontSize = 14.sp, color = textColor)
-            TextButton(
-                onClick = { goToLogin() },
-                modifier = Modifier
-                    .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
-            ) {
-                Text("Log in", fontSize = 14.sp, color = Color.Blue)
+                // Pills Image
+                Image(
+                    painter = painterResource(id = R.drawable.ggk),
+                    contentDescription = "ggk",
+                    modifier = Modifier.size(120.dp)
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Signup Texts
+                Text(
+                    text = "Let's Sign You up",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF502693)
+                )
+                Text(
+                    text = "Hello and Welcome!",
+                    fontSize = 14.sp,
+                    color = Color.Gray
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+            Column(modifier = modifier.weight(1f)
+                .padding(end = 12.dp)) {
+                // Name Field
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Email Field
+                OutlinedTextField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = { Text("Email", color = textColor) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // Password Field
+                OutlinedTextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text("Password", color = textColor) },
+                    placeholder = { Text("at least 8 characters", color = textColor) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff,
+                                contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Sign Up Button
+                Button(
+                    onClick = {
+                        viewModel.signUp(email, password, name, context) { state, message ->
+                            if (state) {
+                                onSignUp()
+                            } else {
+                                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1E6FFA))
+                ) {
+                    Text("Sign up", fontSize = 18.sp, color = Color.White)
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Already have an account? ", fontSize = 14.sp, color = textColor)
+                    TextButton(
+                        onClick = { goToLogin() },
+                        modifier = Modifier
+                            .offset(x = (-8).dp, y = (-2).dp) // Moved left and up
+                    ) {
+                        Text("Log in", fontSize = 14.sp, color = Color.Blue)
+                    }
+                }
             }
         }
+        }
+
+
     }
-}
+
 
 

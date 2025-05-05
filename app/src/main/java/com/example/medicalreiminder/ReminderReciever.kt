@@ -28,7 +28,7 @@ class ReminderReciever : BroadcastReceiver() {
             ) {
                 val notification = NotificationCompat.Builder(context,"medicine_reminder")
                     .setContentTitle(reminder.name)
-                    .setSmallIcon(R.drawable.android)
+                    .setSmallIcon(R.drawable.baseline_medication_24)
                     .setContentText("Time to take your medicine")
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .build()
@@ -40,7 +40,8 @@ class ReminderReciever : BroadcastReceiver() {
         else{
             val notification = NotificationCompat.Builder(context,"rem")
                 .setContentTitle(reminder.name)
-                .setSmallIcon(R.drawable.android)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText("Time to take your medicine")
                 .build()
             NotificationManagerCompat.from(context).
             notify(1,notification)

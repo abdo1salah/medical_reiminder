@@ -54,7 +54,7 @@ fun Navigation(
 ) {
 
     NavHost(navController = navController, startDestination = SignIn) {
-        val authenticationViewModel = AuthenticationViewModel()
+        val authenticationViewModel = AuthenticationViewModel(appContext)
         val reminderViewModel = ReminderViewModel(appContext)
         composable<SignIn> {
             LoginPage(modifier, authenticationViewModel, onLogIn =  {

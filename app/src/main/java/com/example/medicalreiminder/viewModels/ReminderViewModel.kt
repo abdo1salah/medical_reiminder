@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.medicalreiminder.model.Api.BarcodeApi
 import com.example.medicalreiminder.model.DbHelper
@@ -19,7 +20,7 @@ import com.example.medicalreiminder.presentation.BarcodeScanner
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class ReminderViewModel(app: Application) : AndroidViewModel(app) {
+class ReminderViewModel(app: Application) : ViewModel() {
 
     val db = DbHelper.getInstance(app).dao
     var reminders = db.getReminders()
@@ -57,13 +58,6 @@ class ReminderViewModel(app: Application) : AndroidViewModel(app) {
     }
 
 
-    fun loadIntoDb(reminders: List<Reminder>) {
-        viewModelScope.launch {
-            for (reminder in reminders) {
-                db.upsertReminder(reminder)
-            }
-        }
 
-    }
 
 }
