@@ -9,7 +9,7 @@ import com.example.medicalreiminder.model.Reminder
 import com.google.gson.Gson
 
 fun setUpAlarm(context: Context, reminder: Reminder) {
-    val repeatEvery = reminder.timeOffset*60L*1000L
+    val repeatEvery = reminder.timeOffset*60*60L*1000L
     val intent = Intent(context, ReminderReciever::class.java).apply {
         putExtra("Reminder", Gson().toJson(reminder))
     }
